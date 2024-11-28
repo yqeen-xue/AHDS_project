@@ -1,55 +1,33 @@
 library(tidyverse)
 library(tidytext)
-library(SnowballC)
-library(topicmodels)
-library(this.path)
 
-setwd(this.dir())
-df <- read_tsv("data/cleaned_words.tsv")
-df_dtm <- df %>%
-  count(PMID, word, sort = TRUE) %>%
-  cast_dtm(PMID, word, n)
+df <- read_tsv("data/clean/cleaned_words.tsv", show_col_types = FALSE)
 
-k <- 5  
-lda_model <- LDA(df_dtm, k = k, control = list(seed = 1234))
+df_summary <- df %>%
+  mutate(year = as.numeric(year)) %>%  
+  filter(!is.na(year) & year >= 2020 & year <= 2025) %>%  
+  count(year, word, name = "n") %>%  
+  group_by(year) %>%
+  slice_max(n, n = 5)  
 
-topics <- tidy(lda_model, matrix = "beta")
 
-documents <- tidy(lda_model, matrix = "gamma")
-
-top_terms <- topics %>%
-  group_by(topic) %>%
-  slice_max(beta, n = 10) %>%
-  ungroup() %>%
-  arrange(topic, -beta)
-
-ggplot(top_terms, aes(x = reorder_within(term, beta, topic), y = beta, fill = factor(topic))) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~ topic, scales = "free") +
-  coord_flip() +
-  labs(title = "Top Terms in Each Topic",
-       x = NULL, y = "Beta") +
+plot <- ggplot(df_summary, aes(x = year, y = n, color = word, group = word)) +
+  geom_line() +
+  labs(
+    title = "Top Keywords Over Time in COVID-19 Research",
+    x = "Year",
+    y = "Frequency",
+    color = "Keyword"
+  ) +
   theme_minimal() +
-  scale_x_reordered()
+  scale_x_continuous(
+    limits = c(2020, 2025),  
+    breaks = 2020:2025       
+  )
 
-ggsave("data/lda_top_terms2.png", width = 8, height = 6)
+if (!dir.exists("~/AHDS_project")) {
+  dir.create("~/AHDS_project", recursive = TRUE)
+}
 
-df_year <- df %>%
-  select(PMID, year) %>%
-  distinct()
-
-doc_topics <- documents %>%
-  inner_join(df_year, by = c("document" = "PMID"))
-
-topic_trends <- doc_topics %>%
-  group_by(year, topic) %>%
-  summarise(mean_gamma = mean(gamma)) %>%
-  ungroup()
-
-ggplot(data = df, mapping = aes(x = year, y = mean_gamma, color = factor(topic))) +
-  geom_point() +
-  scale_color_brewer(name = "Topic Trends Over Time", palette = "OrRd") +
-  geom_line()
-  theme_minimal()
-
-ggsave("data/lda_topic_trends2.png", width = 8, height = 6)
+print(plot)
+ggsave("~/AHDS_project/keyword_trend_plot.png", plot = plot, width = 8, height = 6, dpi = 300)
