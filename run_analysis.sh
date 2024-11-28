@@ -15,8 +15,10 @@ set -e
 cd "${SLURM_SUBMIT_DIR}"
 
 # Conda environment
-source ~/.initMamba.sh
-mamba activate AHDS
+source ~/initConda.sh
+conda env create -f environment.yaml
+conda activate AHDS-project
+
 
 # Setup directories
 mkdir -p logs
