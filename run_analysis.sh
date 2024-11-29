@@ -11,16 +11,20 @@ set -e
 #SBATCH --account=SSCM033324
 #SBATCH --output ./slurm_logs/%j.out
 
-
-cd "${SLURM_SUBMIT_DIR}"
-
-# Conda environment
-source ~/.initMamba.sh
-mamba activate AHDS
-
-# Setup directories
+mkdir -p slurm_logs
 mkdir -p logs
 mkdir -p data/clean
 mkdir -p data/raw
 
+cd "${SLURM_SUBMIT_DIR}"
+
+# Conda environment
+source ~/miniconda3/etc/profile.d/conda.sh
+if ! conda info --envs | grep -q AHDS-project; then
+  conda env create -f environment.yaml
+fi
+conda activate AHDS-project
+
+
 snakemake -c1
+
