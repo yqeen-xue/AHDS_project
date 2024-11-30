@@ -13,6 +13,16 @@ set -e
 #SBATCH --error=./slurm_logs/%j.err
 
 mkdir -p slurm_logs
+
+cd "${SLURM_SUBMIT_DIR}"
+
+# Conda environment
+source ~/initConda.sh
+conda env create -f environment.yaml
+conda activate AHDS-project
+
+
+# Setup directories
 mkdir -p logs
 mkdir -p data/clean
 mkdir -p data/raw
