@@ -1,26 +1,25 @@
-
 log_file <- "logs/clean.log"
 dir.create(dirname(log_file), showWarnings = FALSE, recursive = TRUE)
-件
-log_connection <- file(log_file, open = "wt") # 以写入模式覆盖旧日志
+
+log_connection <- file(log_file, open = "wt") 
 writeLines("Starting cleaned_words.R\n", log_connection)
 close(log_connection)
 
 write_log <- function(message) {
-  log_connection <- file(log_file, open = "at") # 追加模式打开
+  log_connection <- file(log_file, open = "at") 
   writeLines(message, log_connection)
   close(log_connection)
 }
 
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 
-
 required_packages <- c("tidyverse", "tidytext", "SnowballC")
 for (pkg in required_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     write_log(paste("Installing package:", pkg, "\n"))
     install.packages(pkg)
-  
+  }
+}
 
 library(tidyverse)
 library(tidytext)

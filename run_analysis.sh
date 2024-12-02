@@ -12,27 +12,31 @@ set -e
 #SBATCH --output ./slurm_logs/%j.out
 #SBATCH --error=./slurm_logs/%j.err
 
-mkdir -p slurm_logs logs data/clean data/raw
+mkdir -p slurm_logs
+mkdir -p logs
+mkdir -p data/clean
+mkdir -p data/raw
 
 cd "${SLURM_SUBMIT_DIR}"
 
 if [ -f /user/work/kq24393/miniforge3/etc/profile.d/conda.sh ]; then
   source /user/work/kq24393/miniforge3/etc/profile.d/conda.sh
 else
-  echo "Error: Conda initialization script not found" >&2
+  echo "Error: Conda initialization script not found at /user/work/kq24393/miniforge3/etc/profile.d/conda.sh" >&2
   exit 1
 fi
 
-if ! conda info --envs | grep -q "test_env"; then
+conda activate base
+
+if ! conda info --envs | grep -q "AHDS-project"; then
   if [ -f environment.yaml ]; then
-    conda env create -f environment.yaml -n test_env
+    conda env create -f environment.yaml
   else
     echo "Error: environment.yaml not found. Cannot create Conda environment." >&2
     exit 1
   fi
 fi
+conda activate AHDS-project
 
-conda activate test_env
 
 snakemake -c1
-

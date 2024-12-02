@@ -1,12 +1,12 @@
 log_file <- "logs/visualisation.log"
 dir.create(dirname(log_file), showWarnings = FALSE, recursive = TRUE)
 
-log_connection <- file(log_file, open = "wt") # 以写入模式覆盖旧日志
+log_connection <- file(log_file, open = "wt")
 writeLines("Starting visualisation.R\n", log_connection)
 close(log_connection)
 
 write_log <- function(message) {
-  log_connection <- file(log_file, open = "at") # 追加模式打开
+  log_connection <- file(log_file, open = "at") 
   writeLines(message, log_connection)
   close(log_connection)
 }
