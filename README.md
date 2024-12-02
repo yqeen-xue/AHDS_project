@@ -22,6 +22,26 @@ Before running the scripts, ensure that the Conda environment is correctly set u
    conda env list
    ```
 
+## File Structure
+
+The repository is organized as follows:
+
+```
+AHDS_project/
+├── data/
+│   ├── raw/
+│   ├── clean/
+├── logs/
+├── slurm_logs/
+├── download_data.sh
+├── process_data.sh
+├── cleaned_words.R
+├── visualisation.R
+├── environment.yaml
+├── Snakefile
+├── README.md
+```
+
 ## Running the Program
 
 The workflow is managed by Snakemake, with jobs submitted via SLURM on HPC.
@@ -117,25 +137,19 @@ If activating the Conda environment fails:
    rm -r data logs slurm_logs
    ```
 
-## File Structure
+## Git Operations History
 
-The repository is organized as follows:
+### Recent Commits
 
-```
-AHDS_project/
-├── data/
-│   ├── raw/
-│   ├── clean/
-├── logs/
-├── slurm_logs/
-├── download_data.sh
-├── process_data.sh
-├── cleaned_words.R
-├── visualisation.R
-├── environment.yaml
-├── Snakefile
-├── README.md
-```
+- `fa5bfc9`: Add README file  
+- `8708b9c`: todo_hpc  
+- `2b8fee9`: todo hpc  
+- `59716d8`: todo snakefile  
+- `571562d`: test  
+- `8eb72ae`: test  
+- `9cb3ca5`: initial programme  
+- `f82aed9`: Processed XML data and created TSV file with PMID, year, and title  
+- `2c9e482`: Initial commit  
 
 ## Additional Notes
 
